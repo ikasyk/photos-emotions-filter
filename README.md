@@ -3,4 +3,8 @@
 The application retrieves photos from Flickr album and provides a filter by people emotions.
 
 ### Running
-Start the `BootApplication` class.
+1. Build front-end scripts using following command:
+```
+mvn install
+```
+2. Compile and run the `BootApplication` class.
