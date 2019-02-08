@@ -14,4 +14,5 @@ public class Photo {
     String title;
     // список розмеров и ссилок на них
     List<Sources> sources;
+    List<Face> faces;
 }
