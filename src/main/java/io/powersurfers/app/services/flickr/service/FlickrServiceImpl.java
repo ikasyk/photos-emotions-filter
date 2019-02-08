@@ -1,11 +1,8 @@
 package io.powersurfers.app.services.flickr.service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
-import io.powersurfers.app.services.flickr.model.Photo;
 import io.powersurfers.app.services.flickr.model.PhotoSet;
 import io.powersurfers.app.services.flickr.model.Sources;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,8 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -79,7 +74,9 @@ public class FlickrServiceImpl implements FlickrService {
     @Override
     public List<Sources> getPhotoSourceById(String photoId) {
         // https://www.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key=8e4686f0cad0111d3c7d566d6ab69fec&photo_id=30622823845
-        JsonNode jsonSources = new RestTemplate().
+
+
+        /*JsonNode jsonSources = new RestTemplate().
                 getForObject("https://www.flickr.com/services/rest/" +
                                 "?method=flickr.photos.getSizes" +
                                 "&api_key=" + API_KEY +
@@ -103,6 +100,8 @@ public class FlickrServiceImpl implements FlickrService {
             e.printStackTrace();
         }
         System.out.println("Hello - " + jsonSources.get("sizes").get("size"));
+
+        */
         return null;
 
     }
