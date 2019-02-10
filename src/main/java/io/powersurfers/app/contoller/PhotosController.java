@@ -24,4 +24,11 @@ public class PhotosController {
     public PhotoSet getPhotosListByPhotoSetIdAndUserId(@RequestParam String photoSetId, @RequestParam String userId) {
         return photosService.getPhotoSetByPhotoSetIdAndUserId(photoSetId, userId);
     }
+
+    @GetMapping("/getPhotos")
+    public PhotoSet getPhotosListByIdsAndTag(@RequestParam String photoSetId, @RequestParam String userId, @RequestParam String tag) {
+        PhotoSet photosById = photosService.getPhotoSetByPhotoSetIdAndUserId(photoSetId, userId);
+        PhotoSet photosByTag = photosService.getPhotoSetByTag(tag);
+        return photosService.mergePhotoSets(photosById, photosByTag);
+    }
 }

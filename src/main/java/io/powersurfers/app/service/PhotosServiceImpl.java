@@ -17,9 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -123,5 +121,19 @@ public class PhotosServiceImpl implements PhotosService {
                 throw new FppRequestException(faceDetectResponse.getErrorMessage());
             }
         }
+    }
+
+    @Override
+    public PhotoSet mergePhotoSets(PhotoSet first, PhotoSet second) {
+        PhotoSet result = new PhotoSet();
+
+        Map<String, Photo> photosByIds = new HashMap<>();
+
+        fppHelper.fillPhotosIdents(first, photosByIds);
+        fppHelper.fillPhotosIdents(second, photosByIds);
+
+        result.setPhotos(new ArrayList<>(photosByIds.values()));
+
+        return result;
     }
 }

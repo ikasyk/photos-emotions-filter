@@ -1,5 +1,7 @@
 package io.powersurfers.app.service.faceplusplus;
 
+import io.powersurfers.app.model.Photo;
+import io.powersurfers.app.model.PhotoSet;
 import io.powersurfers.app.model.faceplusplus.FppDetectApiResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -49,5 +51,11 @@ public class FppHelper {
         }
 
         return results;
+    }
+
+    public void fillPhotosIdents(PhotoSet photoSet, Map<String, Photo> result) {
+        for (Photo photo : photoSet.getPhotos()) {
+            result.put(photo.getId(), photo);
+        }
     }
 }

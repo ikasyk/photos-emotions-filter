@@ -6,4 +6,6 @@ public interface PhotosService {
     PhotoSet getPhotoSetByPhotoSetIdAndUserId(String photoSetId, String userId);
 
     PhotoSet getPhotoSetByTag(String tag);
+
+    PhotoSet mergePhotoSets(PhotoSet first, PhotoSet second);
 }
