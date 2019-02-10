@@ -12,6 +12,7 @@ import io.powersurfers.app.service.faceplusplus.FppRequestException;
 import io.powersurfers.app.service.faceplusplus.FppRestQueryEntityBuilder;
 import io.powersurfers.app.service.flickr.FlickrHelper;
 import io.powersurfers.app.service.flickr.FlickrRequestException;
+import io.powersurfers.app.util.ExternalRequestsCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
@@ -23,16 +24,15 @@ import java.util.stream.Collectors;
 @Service
 public class PhotosServiceImpl implements PhotosService {
 
-    private Map<String, List<Source>> photoSourcesCache = new HashMap<>();
-    private Map<String, List<String>> photoFacesCache = new HashMap<>();
-
     private FlickrHelper flickrHelper;
     private FppHelper fppHelper;
+    private ExternalRequestsCache externalData;
 
     @Autowired
-    public PhotosServiceImpl(FlickrHelper flickrHelper, FppHelper fppHelper) {
+    public PhotosServiceImpl(FlickrHelper flickrHelper, FppHelper fppHelper, ExternalRequestsCache externalData) {
         this.flickrHelper = flickrHelper;
         this.fppHelper = fppHelper;
+        this.externalData = externalData;
     }
 
     @Override
@@ -72,7 +72,7 @@ public class PhotosServiceImpl implements PhotosService {
         for (Photo photo : photoSet.getPhotos()) {
             String photoId = photo.getId();
 
-            List<Source> sourcesInCache = photoSourcesCache.get(photoId);
+            List<Source> sourcesInCache = externalData.retrieveSources(photoId);
             if (sourcesInCache != null) {
                 photo.setSources(sourcesInCache);
                 continue;
@@ -89,18 +89,20 @@ public class PhotosServiceImpl implements PhotosService {
 
                 photo.setSources(sources);
 
-                photoSourcesCache.put(photoId, sources);
+                externalData.cacheSources(photoId, sources);
             } else {
                 throw new FlickrRequestException(photoSizesResponse.getMessage(), photoSizesResponse.getCode());
             }
         }
+
+        externalData.save();
     }
 
     private void fillPhotoEmotions(PhotoSet photoSet) {
         for (Photo photo : photoSet.getPhotos()) {
             String photoId = photo.getId();
 
-            List<String> facesInCache = photoFacesCache.get(photoId);
+            List<String> facesInCache = externalData.retrieveFaces(photoId);
             if (facesInCache != null) {
                 photo.setFaces(facesInCache);
                 continue;
@@ -116,11 +118,13 @@ public class PhotosServiceImpl implements PhotosService {
                 List<String> faces = fppHelper.getEmotionsFromResponse(faceDetectResponse);
                 photo.setFaces(faces);
 
-                photoFacesCache.put(photoId, faces);
+                externalData.cacheFaces(photoId, faces);
             } else {
                 throw new FppRequestException(faceDetectResponse.getErrorMessage());
             }
         }
+
+        externalData.save();
     }
 
     @Override
