@@ -33,6 +33,10 @@ public class FppHelper {
         for (FppDetectApiResponse.FppFace face : response.getFaces()) {
             Map.Entry<String, Double> probableEmotion = null;
 
+            if (face.getAttributes() == null) {
+                continue;
+            }
+
             for (Map.Entry<String, Double> emotionEntry : face.getAttributes().getEmotion().entrySet()) {
                 if (probableEmotion == null) {
                     probableEmotion = emotionEntry;
